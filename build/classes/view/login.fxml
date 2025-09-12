@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.LoginController"
+            prefWidth="400" prefHeight="500"
+            style="-fx-background-color: linear-gradient(to bottom right, #ece9e6, #ffffff);">
+
+    <VBox fx:id="rootContainer" alignment="CENTER" spacing="15" 
+          AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+
+   
+        <Label text="Iniciar Sesión"
+               style="-fx-font-size: 26px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" />
+  
+        <TextField fx:id="txtCorreo" promptText="Correo electrónico"
+                   style="-fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;"/>
+    
+        <PasswordField fx:id="txtContrasenia" promptText="Contraseña"
+                       style="-fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;"/>
+
+        <TextField fx:id="txtContraseniaVisible" promptText="Contraseña"
+                   style="-fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;"
+                   visible="false" managed="false"/>
+
+        <CheckBox fx:id="chkMostrarContrasenia" text="Mostrar contraseña"
+                  style="-fx-text-fill: #2c3e50; -fx-font-size: 12px;" />
+
+        <Button text="Ingresar" fx:id="btnLogin"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-background-radius: 8; -fx-padding: 10 20; -fx-font-size: 14px;" />
+   
+        <Hyperlink text="¿Olvidó su contraseña?" fx:id="linkOlvido"
+                   style="-fx-text-fill: #2980b9; -fx-font-size: 12px;"/>
+
+        <Separator style="-fx-background-color: #bdc3c7;" prefWidth="300"/>
+   
+        <Button text="Crear cuenta" fx:id="btnRegistro"
+                style="-fx-background-color: transparent; -fx-text-fill: #2c3e50; -fx-font-weight: bold;
+                       -fx-font-size: 13px; -fx-underline: true;" />
+    </VBox>
+</AnchorPane>
+
