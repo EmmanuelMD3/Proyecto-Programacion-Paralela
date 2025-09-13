@@ -6,13 +6,16 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.VBox;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class LoginController
 {
 
     @FXML
-    private VBox rootContainer; 
+    private VBox rootContainer;
 
     @FXML
     private TextField txtCorreo;
@@ -105,7 +108,16 @@ public class LoginController
     @FXML
     private void handleRegistro(ActionEvent event)
     {
-        mostrarAlerta("Registro", "Aquí iría la ventana de registro");
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/registro.fxml"));
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) btnLogin.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @FXML

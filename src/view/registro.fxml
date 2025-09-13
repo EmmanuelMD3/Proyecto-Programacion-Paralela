@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.RegistroController"
+            prefWidth="450" prefHeight="550"
+            styleClass="root-container">
+
+    <VBox alignment="CENTER" spacing="12"
+          AnchorPane.topAnchor="30" AnchorPane.leftAnchor="30"
+          AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
+
+        <Label text="Crear Cuenta" styleClass="title-label"/>
+
+        <TextField fx:id="txtNombre" promptText="Nombre completo" styleClass="input-field"/>
+        <TextField fx:id="txtCorreo" promptText="Correo electrónico" styleClass="input-field"/>
+        <PasswordField fx:id="txtContrasenia" promptText="Contraseña" styleClass="input-field"/>
+        <PasswordField fx:id="txtConfirmar" promptText="Confirmar contraseña" styleClass="input-field"/>
+
+        <Button text="Registrarse" fx:id="btnRegistrar" styleClass="button-primary" onAction="#handleRegistro"/>
+
+        <Hyperlink text="¿Ya tienes cuenta? Inicia sesión" fx:id="linkLogin" styleClass="hyperlink" onAction="#handleVolverLogin"/>
+    </VBox>
+</AnchorPane>

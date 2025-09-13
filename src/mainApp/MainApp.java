@@ -20,15 +20,20 @@ public class MainApp extends Application
     @Override
     public void start(Stage stage) throws Exception
     {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
-        Scene scene = new Scene(loader.load());
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(getClass().getResource("/style/login.css").toExternalForm());
+            stage.setTitle("Tienda Online");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e)
+        {
+            System.out.println(e.toString());
+        }
 
-        //scene.getStylesheets().add(getClass().getResource("/styles/formulario.css").toExternalForm());
-
-        stage.setTitle("Tienda Online");
-        stage.setScene(scene);
-        stage.show();
     }
 
     public static void main(String[] args)
