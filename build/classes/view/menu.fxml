@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.MenuController"
+            prefWidth="800" prefHeight="600"
+            styleClass="root-container">
+
+    <!-- Menú lateral -->
+    <left>
+        <VBox spacing="15" prefWidth="200" styleClass="sidebar">
+            <Label text="Menú Principal" styleClass="sidebar-title"/>
+            <Button text="Inicio" styleClass="sidebar-btn"/>
+            <Button text="Usuarios" styleClass="sidebar-btn"/>
+            <Button text="Configuración" styleClass="sidebar-btn"/>
+            <Button text="Cerrar Sesión" styleClass="sidebar-btn" fx:id="btnCerrarSesion" onAction="#handleCerrarSesion"/>
+        </VBox>
+    </left>
+
+    <!-- Contenido central -->
+    <center>
+        <StackPane styleClass="content">
+            <Label text="Bienvenido al sistema" styleClass="title-label"/>
+        </StackPane>
+    </center>
+</BorderPane>

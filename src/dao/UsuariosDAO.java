@@ -9,6 +9,7 @@ import java.sql.Connection;
 import model.Usuarios;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.*;
 
 /**
  *
@@ -34,4 +35,25 @@ public class UsuariosDAO
             return false;
         }
     }
+
+    public static boolean validarUsuario(String correo, String contrasenia)
+    {
+        String sql = "SELECT * FROM Usuarios WHERE correo = ? AND contrasenia = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql))
+        {
+
+            ps.setString(1, correo);
+            ps.setString(2, contrasenia); // ⚠️ aquí deberías usar hash, no texto plano
+
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // true si existe usuario
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

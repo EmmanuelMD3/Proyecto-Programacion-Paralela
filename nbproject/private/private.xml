@@ -8,13 +8,15 @@
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/dao/UsuariosDAO.java</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/dao/VentasDAO.java</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/mainApp/MainApp.java</file>
-            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/view/login.fxml</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/controller/LoginController.java</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/style/login.css</file>
-            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/view/registro.fxml</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/controller/RegistroController.java</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/model/Usuarios.java</file>
             <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/conexion/Conexion.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/style/alert.css</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/view/menu.fxml</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/controller/MenuController.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/view/dashboard.fxml</file>
         </group>
     </open-files>
 </project-private>

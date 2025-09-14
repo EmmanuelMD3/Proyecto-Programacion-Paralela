@@ -1,11 +1,13 @@
 package controller;
 
+import dao.UsuariosDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.VBox;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -86,22 +88,55 @@ public class LoginController
     private void handleLogin(ActionEvent event)
     {
         String correo = txtCorreo.getText();
-        String contrasenia = chkMostrarContrasenia.isSelected()
-                ? txtContraseniaVisible.getText()
-                : txtContrasenia.getText();
+        String contrasenia = txtContrasenia.getText();
 
         if (correo.isEmpty() || contrasenia.isEmpty())
         {
-            mostrarAlerta("Error", "Debe ingresar usuario y contraseña");
+            mostrarAlerta("Error", "Debe ingresar correo y contraseña");
             return;
         }
 
-        if (correo.equals("admin@uaemex.mx") && contrasenia.equals("1234"))
+        // Usamos un hilo (Task) para no congelar la interfaz
+        Task<Boolean> loginTask = new Task<>()
         {
-            mostrarAlerta("Bienvenido", "Inicio de sesión correcto");
-        } else
+            @Override
+            protected Boolean call()
+            {
+                return UsuariosDAO.validarUsuario(correo, contrasenia);
+            }
+        };
+
+        loginTask.setOnSucceeded(e ->
         {
-            mostrarAlerta("Error", "Credenciales inválidas");
+            boolean valido = loginTask.getValue();
+            if (valido)
+            {
+                abrirDashboard();
+            } else
+            {
+                mostrarAlerta("Error", "Credenciales inválidas.");
+            }
+        });
+
+        loginTask.setOnFailed(e -> mostrarAlerta("Error", "No se pudo conectar con la BD."));
+
+        new Thread(loginTask).start();
+    }
+
+    private void abrirDashboard()
+    {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dashboard.fxml"));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(getClass().getResource("/style/login.css").toExternalForm());
+
+            Stage stage = (Stage) btnLogin.getScene().getWindow();
+            stage.setScene(scene);
+            stage.centerOnScreen();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -114,7 +149,7 @@ public class LoginController
             Scene scene = new Scene(loader.load());
 
             scene.getStylesheets().add(getClass().getResource("/style/login.css").toExternalForm());
-            
+
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.setTitle("Crear Cuenta");
             stage.setScene(scene);
@@ -126,16 +161,28 @@ public class LoginController
     }
 
     @FXML
-    private void handleOlvidoContrasenia(ActionEvent event)
-    {
-        mostrarAlerta("Recuperar contraseña", "Se ha enviado un enlace de recuperación a su correo.");
-    }
 
     private void mostrarAlerta(String titulo, String mensaje)
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
+        alert.setHeaderText(titulo);
         alert.setContentText(mensaje);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/style/alert.css").toExternalForm());
+
         alert.showAndWait();
     }
+
+    @FXML
+    private void handleOlvidoContrasenia()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Recuperar contraseña");
+        alert.setHeaderText("Función no implementada aún");
+        alert.setContentText("Aquí iría la lógica para recuperar la contraseña, como enviar un correo.");
+        alert.showAndWait();
+    }
+
 }

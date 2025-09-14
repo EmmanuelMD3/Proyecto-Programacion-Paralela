@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.DashboardController"
+            prefWidth="1000" prefHeight="650"
+            styleClass="root-container">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="topbar">
+            <!-- Botón menú hamburguesa -->
+            <Button fx:id="btnMenu" onAction="#toggleMenu" styleClass="menu-button">
+                <graphic>
+                    <ImageView fitWidth="24" fitHeight="24">
+                        <Image url="@../icons/menu.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Label text="Tienda Online" styleClass="topbar-title"/>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox fx:id="sideMenu" spacing="15" prefWidth="220" styleClass="sidebar" visible="false" managed="false">
+            <Label text="Menú" styleClass="sidebar-title"/>
+            <Button text="Productos" styleClass="sidebar-btn"/>
+            <Button text="Carrito" styleClass="sidebar-btn"/>
+            <Button text="Mis Compras" styleClass="sidebar-btn"/>
+            <Button text="Cerrar Sesión" styleClass="sidebar-btn" onAction="#handleCerrarSesion"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content">
+            <Label text="Bienvenido a la tienda en línea" styleClass="title-label"/>
+        </StackPane>
+    </center>
+</BorderPane>
