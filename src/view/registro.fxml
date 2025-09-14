@@ -22,7 +22,11 @@
         <PasswordField fx:id="txtConfirmar" promptText="Confirmar contraseña" styleClass="input-field"/>
 
         <Button text="Registrarse" fx:id="btnRegistrar" styleClass="button-primary" onAction="#handleRegistro"/>
-
-        <Hyperlink text="¿Ya tienes cuenta? Inicia sesión" fx:id="linkLogin" styleClass="hyperlink" onAction="#handleVolverLogin"/>
+        
+        <Hyperlink text="¿Ya tienes cuenta? Inicia sesión" 
+                   fx:id="linkLogin" 
+                   styleClass="hyperlink" 
+                   onAction="#handleVolverLogin"/>
     </VBox>
 </AnchorPane>
+ 

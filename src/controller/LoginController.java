@@ -112,8 +112,13 @@ public class LoginController
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/registro.fxml"));
             Scene scene = new Scene(loader.load());
+
+            scene.getStylesheets().add(getClass().getResource("/style/login.css").toExternalForm());
+            
             Stage stage = (Stage) btnLogin.getScene().getWindow();
+            stage.setTitle("Crear Cuenta");
             stage.setScene(scene);
+            stage.centerOnScreen();
         } catch (Exception e)
         {
             e.printStackTrace();

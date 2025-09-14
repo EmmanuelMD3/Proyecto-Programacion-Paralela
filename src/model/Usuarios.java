@@ -31,6 +31,15 @@ public class Usuarios
         this.creado_en = creado_en;
     }
 
+    public Usuarios(String nombre, String corre, String contrasenia)
+    {
+        this.nombre = nombre;
+        this.corre = corre;
+        this.contrasenia = contrasenia;
+    }
+    
+
+
     /**
      * @return the idUsuario
      */
