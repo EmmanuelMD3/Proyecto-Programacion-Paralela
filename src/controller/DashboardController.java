@@ -2,6 +2,7 @@ package controller;
 
 import dao.ProductoDAO;
 import java.util.List;
+import java.util.Map;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -11,6 +12,8 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Producto;
@@ -33,48 +36,103 @@ public class DashboardController
         lblCorreo.setText(correo);
     }
 
+    private void cargarProductos()
+    {
+        Map<String, List<Producto>> data = ProductoDAO.obtenerProductosAgrupadosPorCategoria();
+        mostrarProductosPorCategoria(data);
+    }
+
     @FXML
     private void handleProductos()
     {
-        Task<List<Producto>> task = new Task<>()
+        Task<Map<String, List<Producto>>> task = new Task<>()
         {
             @Override
-            protected List<Producto> call()
+            protected Map<String, List<Producto>> call()
             {
-                return ProductoDAO.obtenerProductos();
+                return ProductoDAO.obtenerProductosAgrupadosPorCategoria();
             }
         };
 
         task.setOnSucceeded(e ->
         {
-            List<Producto> productos = task.getValue();
-            mostrarProductos(productos);
+            Map<String, List<Producto>> data = task.getValue();
+            mostrarProductosPorCategoria(data);
         });
 
         task.setOnFailed(e ->
         {
             mostrarMensaje("Error al cargar productos.");
+            task.getException().printStackTrace(); // 
         });
 
         new Thread(task).start();
     }
 
-    private void mostrarProductos(List<Producto> productos)
+    private void mostrarProductosPorCategoria(Map<String, List<Producto>> data)
     {
-        VBox vbox = new VBox(10);
-        vbox.setStyle("-fx-padding: 20;");
-        for (Producto p : productos)
-        {
-            HBox item = new HBox(15);
-            Label nombre = new Label(p.getNombre());
-            nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-            Label precio = new Label("$" + p.getPrecio());
-            Button btnAgregar = new Button("Agregar al carrito");
+        VBox root = new VBox(25);
+        root.setStyle("-fx-padding: 20; -fx-background-color: #f4f6f9;");
 
-            item.getChildren().addAll(nombre, precio, btnAgregar);
-            vbox.getChildren().add(item);
+        for (Map.Entry<String, List<Producto>> entry : data.entrySet())
+        {
+            String categoria = entry.getKey();
+            List<Producto> productos = entry.getValue();
+
+            Label lblCat = new Label(categoria);
+            lblCat.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+            FlowPane flow = new FlowPane();
+            flow.setHgap(20);
+            flow.setVgap(20);
+            flow.setPrefWrapLength(800);
+
+            for (Producto p : productos)
+            {
+                VBox card = new VBox(10);
+                card.setStyle(
+                        "-fx-background-color: white;"
+                        + "-fx-padding: 15;"
+                        + "-fx-background-radius: 12;"
+                        + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6,0,0,3);"
+                );
+                card.setPrefWidth(200);
+
+                Label nombre = new Label(p.getNombre());
+                nombre.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;");
+
+                Label desc = new Label(p.getPresentacion() != null ? p.getPresentacion() : "Sin descripción");
+                desc.setWrapText(true);
+                desc.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 12px;");
+
+                Label precio = new Label("$" + String.format("%.2f", p.getPrecio()));
+                precio.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 14px;");
+
+                Button btnAgregar = new Button("Agregar al carrito");
+                btnAgregar.setStyle(
+                        "-fx-background-color: #2c3e50;"
+                        + "-fx-text-fill: white;"
+                        + "-fx-background-radius: 6;"
+                        + "-fx-cursor: hand;"
+                );
+
+                btnAgregar.setOnAction(e ->
+                {
+                    System.out.println("Producto agregado: " + p.getNombre());
+                });
+
+                card.getChildren().addAll(nombre, desc, precio, btnAgregar);
+                flow.getChildren().add(card);
+            }
+
+            root.getChildren().addAll(lblCat, flow);
         }
-        contentArea.getChildren().setAll(vbox);
+        
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setFitToWidth(true); 
+        scrollPane.setStyle("-fx-background-color: transparent;"); 
+
+        contentArea.getChildren().setAll(root);
     }
 
     @FXML

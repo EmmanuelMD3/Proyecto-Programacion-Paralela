@@ -10,11 +10,13 @@ package model;
  */
 public class Producto
 {
+
     private int idProducto;
     private int idCategoria;
     private String nombre;
     private String presentacion;
     private double precio;
+    private String nombreCategoria;
 
     public Producto()
     {
@@ -27,6 +29,16 @@ public class Producto
         this.nombre = nombre;
         this.presentacion = presentacion;
         this.precio = precio;
+    }
+
+    public Producto(int idProducto, int idCategoria, String nombre, String presentacion, double precio, String nombreCategoria)
+    {
+        this.idProducto = idProducto;
+        this.idCategoria = idCategoria;
+        this.nombre = nombre;
+        this.presentacion = presentacion;
+        this.precio = precio;
+        this.nombreCategoria = nombreCategoria;
     }
 
     /**
@@ -48,6 +60,7 @@ public class Producto
     /**
      * @return the idCategoria
      */
+
     public int getIdCategoria()
     {
         return idCategoria;
@@ -56,6 +69,7 @@ public class Producto
     /**
      * @param idCategoria the idCategoria to set
      */
+
     public void setIdCategoria(int idCategoria)
     {
         this.idCategoria = idCategoria;
@@ -64,6 +78,7 @@ public class Producto
     /**
      * @return the nombre
      */
+
     public String getNombre()
     {
         return nombre;
@@ -72,6 +87,7 @@ public class Producto
     /**
      * @param nombre the nombre to set
      */
+
     public void setNombre(String nombre)
     {
         this.nombre = nombre;
@@ -107,5 +123,21 @@ public class Producto
     public void setPrecio(double precio)
     {
         this.precio = precio;
+    }
+
+    /**
+     * @return the nombreCategoria
+     */
+    public String getNombreCategoria()
+    {
+        return nombreCategoria;
+    }
+
+    /**
+     * @param nombreCategoria the nombreCategoria to set
+     */
+    public void setNombreCategoria(String nombreCategoria)
+    {
+        this.nombreCategoria = nombreCategoria;
     }
 }

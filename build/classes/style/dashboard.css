@@ -54,3 +54,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-alignment: center;
     -fx-background-color: #ecf0f1;
 }
+
+.flow-pane {
+    -fx-padding: 10;
+}

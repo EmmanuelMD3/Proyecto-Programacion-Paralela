@@ -11,7 +11,7 @@ package model;
 public class Categorias
 {
     private int idCategoria;
-    private String nombre;
+    String nombreC;
 
     public Categorias()
     {
@@ -20,7 +20,7 @@ public class Categorias
     public Categorias(int idCategoria, String nombre)
     {
         this.idCategoria = idCategoria;
-        this.nombre = nombre;
+        this.nombreC = nombre;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Categorias
      */
     public String getNombre()
     {
-        return nombre;
+        return nombreC;
     }
 
     /**
@@ -52,6 +52,6 @@ public class Categorias
      */
     public void setNombre(String nombre)
     {
-        this.nombre = nombre;
+        this.nombreC = nombre;
     }
 }
