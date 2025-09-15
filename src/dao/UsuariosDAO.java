@@ -56,4 +56,34 @@ public class UsuariosDAO
         }
     }
 
+    public static Usuarios obtenerUsuario(String correo, String contrasenia)
+    {
+        String sql = "SELECT * FROM Usuarios WHERE correo = ? AND contrasenia = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql))
+        {
+
+            ps.setString(1, correo);
+            ps.setString(2, contrasenia);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                int id = rs.getInt("idUsuario");
+                String nombre = rs.getString("nombre");
+                String email = rs.getString("correo");
+                String pass = rs.getString("contrasenia");
+
+                return new Usuarios(id, nombre, email, pass);
+            }
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null; 
+    }
+
 }

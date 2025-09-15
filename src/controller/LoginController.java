@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Usuarios;
 
 public class LoginController
 {
@@ -90,46 +91,40 @@ public class LoginController
         String correo = txtCorreo.getText();
         String contrasenia = txtContrasenia.getText();
 
-        if (correo.isEmpty() || contrasenia.isEmpty())
-        {
-            mostrarAlerta("Error", "Debe ingresar correo y contraseña");
-            return;
-        }
-
-        // Usamos un hilo (Task) para no congelar la interfaz
-        Task<Boolean> loginTask = new Task<>()
+        Task<Usuarios> loginTask = new Task<>()
         {
             @Override
-            protected Boolean call()
+            protected Usuarios call()
             {
-                return UsuariosDAO.validarUsuario(correo, contrasenia);
+                return UsuariosDAO.obtenerUsuario(correo, contrasenia);
             }
         };
 
         loginTask.setOnSucceeded(e ->
         {
-            boolean valido = loginTask.getValue();
-            if (valido)
+            Usuarios usuario = loginTask.getValue();
+            if (usuario != null)
             {
-                abrirDashboard();
+                abrirDashboard(usuario);
             } else
             {
                 mostrarAlerta("Error", "Credenciales inválidas.");
             }
         });
 
-        loginTask.setOnFailed(e -> mostrarAlerta("Error", "No se pudo conectar con la BD."));
-
         new Thread(loginTask).start();
     }
 
-    private void abrirDashboard()
+    private void abrirDashboard(Usuarios usuario)
     {
         try
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dashboard.fxml"));
             Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/style/login.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
+
+            DashboardController controller = loader.getController();
+            controller.setUserData(usuario.getNombre(), usuario.getCorre());
 
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.setScene(scene);
@@ -141,7 +136,8 @@ public class LoginController
     }
 
     @FXML
-    private void handleRegistro(ActionEvent event)
+    private void handleRegistro(ActionEvent event
+    )
     {
         try
         {
@@ -162,7 +158,8 @@ public class LoginController
 
     @FXML
 
-    private void mostrarAlerta(String titulo, String mensaje)
+    private void mostrarAlerta(String titulo, String mensaje
+    )
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

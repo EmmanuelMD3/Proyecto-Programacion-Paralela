@@ -8,7 +8,7 @@ package model;
  *
  * @author chemo
  */
-public class Productos
+public class Producto
 {
     private int idProducto;
     private int idCategoria;
@@ -16,11 +16,11 @@ public class Productos
     private String presentacion;
     private double precio;
 
-    public Productos()
+    public Producto()
     {
     }
 
-    public Productos(int idProducto, int idCategoria, String nombre, String presentacion, double precio)
+    public Producto(int idProducto, int idCategoria, String nombre, String presentacion, double precio)
     {
         this.idProducto = idProducto;
         this.idCategoria = idCategoria;

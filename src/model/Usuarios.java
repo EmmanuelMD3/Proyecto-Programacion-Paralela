@@ -18,8 +18,12 @@ public class Usuarios
     private String contrasenia;
     private Date creado_en;
 
-    public Usuarios()
+    public Usuarios(int idUsuario, String nombre, String corre, String contrasenia)
     {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.corre = corre;
+        this.contrasenia = contrasenia;
     }
 
     public Usuarios(int idUsuario, String nombre, String corre, String contrasenia, Date creado_en)
@@ -37,6 +41,7 @@ public class Usuarios
         this.corre = corre;
         this.contrasenia = contrasenia;
     }
+    
     
 
 
