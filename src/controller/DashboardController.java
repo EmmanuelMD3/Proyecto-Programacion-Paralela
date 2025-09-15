@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import model.Producto;
 
@@ -127,10 +128,15 @@ public class DashboardController
 
             root.getChildren().addAll(lblCat, flow);
         }
-        
+
         ScrollPane scrollPane = new ScrollPane(root);
-        scrollPane.setFitToWidth(true); 
-        scrollPane.setStyle("-fx-background-color: transparent;"); 
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+
+
+        contentArea.getChildren().setAll(scrollPane);
 
         contentArea.getChildren().setAll(root);
     }
