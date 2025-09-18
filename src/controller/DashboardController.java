@@ -1,8 +1,11 @@
 package controller;
 
 import dao.ProductoDAO;
+import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -10,14 +13,32 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import model.CarritoItem;
 import model.Producto;
+import util.CarritoManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
+import model.CarritoItem;
+import model.Producto;
+import util.CarritoManager;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.Node;
 
 public class DashboardController
 {
@@ -30,6 +51,8 @@ public class DashboardController
 
     @FXML
     private StackPane contentArea;
+
+    private Label lblTotalLocal;
 
     public void setUserData(String nombre, String correo)
     {
@@ -64,7 +87,7 @@ public class DashboardController
         task.setOnFailed(e ->
         {
             mostrarMensaje("Error al cargar productos.");
-            task.getException().printStackTrace(); // 
+            task.getException().printStackTrace();
         });
 
         new Thread(task).start();
@@ -119,7 +142,8 @@ public class DashboardController
 
                 btnAgregar.setOnAction(e ->
                 {
-                    System.out.println("Producto agregado: " + p.getNombre());
+                    CarritoManager.agregarProducto(p);
+                    mostrarMensaje("Producto agregado: " + p.getNombre());
                 });
 
                 card.getChildren().addAll(nombre, desc, precio, btnAgregar);
@@ -135,7 +159,6 @@ public class DashboardController
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setStyle("-fx-background-color: transparent;");
 
-
         contentArea.getChildren().setAll(scrollPane);
 
         contentArea.getChildren().setAll(root);
@@ -144,7 +167,15 @@ public class DashboardController
     @FXML
     private void handleCarrito()
     {
-        mostrarMensaje("Sección del carrito");
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/carrito.fxml"));
+            Parent root = loader.load();
+            contentArea.getChildren().setAll(root);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -179,4 +210,33 @@ public class DashboardController
         alert.setContentText(msg);
         alert.showAndWait();
     }
+
+    private void mostrarCarrito()
+    {
+        VBox root = new VBox(15);
+        root.setStyle("-fx-padding: 20;");
+
+        Label titulo = new Label("Mi carrito");
+        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        for (CarritoItem item : CarritoManager.obtenerCarrito())
+        {
+            HBox fila = new HBox(20);
+
+            Label nombre = new Label(item.getProducto().getNombre());
+            Label cantidad = new Label("Cantidad: " + item.getCantidad());
+            Label subtotal = new Label("Subtotal: $" + String.format("%.2f", item.getSubtotal()));
+
+            fila.getChildren().addAll(nombre, cantidad, subtotal);
+            root.getChildren().add(fila);
+        }
+
+        Label total = new Label("Total: $" + String.format("%.2f", CarritoManager.getTotal()));
+        total.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #27ae60;");
+
+        root.getChildren().add(total);
+
+        contentArea.getChildren().setAll(root);
+    }
+
 }

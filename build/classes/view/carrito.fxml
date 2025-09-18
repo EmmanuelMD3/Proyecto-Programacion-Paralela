@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.CarritoController"
+      spacing="15" alignment="TOP_CENTER"
+      style="-fx-padding: 20; -fx-background-color: #f4f6f9">
+
+    <Label text="Mi Carrito"
+           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50"/>
+
+    <TableView fx:id="tablaCarrito" prefHeight="400" prefWidth="600">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Producto" prefWidth="200"/>
+            <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="100"/>
+            <TableColumn fx:id="colPrecio" text="Precio Unitario" prefWidth="120"/>
+            <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="15" alignment="CENTER_RIGHT" prefWidth="600">
+        <Label text="Total: " style="-fx-font-size: 16px; -fx-font-weight: bold"/>
+        <!-- Escapamos el signo $ con &#36; para que FXMLLoader no lo interprete como KeyPath -->
+        <Label fx:id="lblTotal"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #27ae60"/>
+    </HBox>
+
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button fx:id="btnVaciar" text="Vaciar carrito"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6"/>
+        <Button fx:id="btnFinalizar" text="Finalizar compra"
+                style="-fx-background-color: #2c3e50; -fx-text-fill: white; -fx-background-radius: 6"/>
+    </HBox>
+</VBox>
