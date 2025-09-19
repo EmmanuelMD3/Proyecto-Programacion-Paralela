@@ -30,6 +30,8 @@ public class CarritoController
     @FXML
     public void initialize()
     {
+        tablaCarrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
         lblTotal.setText("$0.00");
         carritoObservable = FXCollections.observableArrayList(CarritoManager.obtenerCarrito());
 
