@@ -80,7 +80,7 @@ public class CarritoManager
             @Override
             protected List<CarritoItem> call()
             {
-                return new ArrayList<>(obtenerCarrito()); // copia segura
+                return new ArrayList<>(obtenerCarrito());
             }
         };
     }
@@ -131,8 +131,68 @@ public class CarritoManager
             @Override
             protected Double call()
             {
-                return getTotal();
+                synchronized (carrito)
+                {
+                    return carrito.stream().mapToDouble(CarritoItem::getSubtotal).sum();
+                }
             }
         };
+    }
+
+    public static synchronized double aplicarDescuento(double total)
+    {
+        if (total > 2000)
+        {
+            return total * 0.85;
+        } else if (total > 1000)
+        {
+            return total * 0.90;
+        }
+        return total;
+    }
+
+    public static Task<Double> aplicarDescuentoTask(double total)
+    {
+        return new Task<>()
+        {
+            @Override
+            protected Double call()
+            {
+                return aplicarDescuento(total);
+            }
+        };
+    }
+
+    public static synchronized double calcularDescuentoRate(double total, int totalItems)
+    {
+        double r1 = (total > 500) ? 0.30 : 0.0;    // 30% si total > 500
+        double r2 = (totalItems >= 3) ? 0.10 : 0.0; // 10% si >=3 items
+        double r3 = (total > 200) ? 0.20 : 0.0;    // 20% si total > 200
+        return Math.max(r1, Math.max(r2, r3));     // toma la mayor
+    }
+
+    public static synchronized double aplicarDescuento(double total, int totalItems)
+    {
+        double rate = calcularDescuentoRate(total, totalItems);
+        double totalConDescuento = total * (1.0 - rate);
+        return totalConDescuento;
+    }
+
+    public static Task<Double> aplicarDescuentoTask(double total, int totalItems)
+    {
+        return new Task<>()
+        {
+            @Override
+            protected Double call()
+            {
+                double rate = calcularDescuentoRate(total, totalItems);
+                return total * (1.0 - rate);
+            }
+        };
+    }
+
+    public static synchronized int getTotalItems()
+    {
+        return carrito.stream().mapToInt(CarritoItem::getCantidad).sum();
     }
 }

@@ -4,6 +4,7 @@ import dao.ProductoDAO;
 import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -142,8 +143,29 @@ public class DashboardController
 
                 btnAgregar.setOnAction(e ->
                 {
-                    CarritoManager.agregarProducto(p);
-                    mostrarMensaje("Producto agregado: " + p.getNombre());
+                    Task<Void> t = CarritoManager.agregarProductoTask(p);
+
+                    t.setOnSucceeded(ev ->
+                    {
+                        Platform.runLater(() -> mostrarMensaje("Producto agregado: " + p.getNombre()));
+
+                        if (CarritoController.getInstance() != null)
+                        {
+                            CarritoController.getInstance().actualizarTotalConDescuentoAuto();
+                        } else
+                        {
+
+                            System.out.println("CarritoController no disponible aún. Actualiza total en próxima apertura.");
+                        }
+                    });
+
+                    t.setOnFailed(ev ->
+                    {
+                        t.getException().printStackTrace();
+                        Platform.runLater(() -> mostrarMensaje("Error al agregar el producto"));
+                    });
+
+                    new Thread(t).start();
                 });
 
                 card.getChildren().addAll(nombre, desc, precio, btnAgregar);

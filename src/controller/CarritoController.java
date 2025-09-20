@@ -1,14 +1,29 @@
 package controller;
 
+import java.util.List;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import model.CarritoItem;
 import util.CarritoManager;
 
 public class CarritoController
 {
+
+    private static CarritoController instance;
+
+    public CarritoController()
+    {
+        instance = this;
+    }
+
+    public static CarritoController getInstance()
+    {
+        return instance;
+    }
 
     @FXML
     private TableView<CarritoItem> tablaCarrito;
@@ -21,6 +36,8 @@ public class CarritoController
     @FXML
     private TableColumn<CarritoItem, Double> colSubtotal;
     @FXML
+    private Label lblDescuento;
+    @FXML
     private Label lblTotal;
     @FXML
     private Button btnVaciar, btnFinalizar;
@@ -30,9 +47,12 @@ public class CarritoController
     @FXML
     public void initialize()
     {
+        System.out.println("lblTotal es: " + lblTotal);
+
         tablaCarrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
         lblTotal.setText("$0.00");
+        lblDescuento.setText("$0.00");
         carritoObservable = FXCollections.observableArrayList(CarritoManager.obtenerCarrito());
 
         colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
@@ -69,7 +89,21 @@ public class CarritoController
 
     private void actualizarTotal()
     {
-        lblTotal.setText("$" + String.format("%.2f", CarritoManager.getTotal()));
+        Task<Double> task = CarritoManager.getTotalTask();
+
+        task.setOnSucceeded(e ->
+        {
+            Double total = task.getValue();
+            lblTotal.setText("$" + String.format("%.2f", total));
+        });
+
+        task.setOnFailed(e ->
+        {
+            lblTotal.setText("Error al calcular total");
+            task.getException().printStackTrace();
+        });
+
+        new Thread(task).start();
     }
 
     private void mostrarAlerta(String titulo, String mensaje)
@@ -78,5 +112,102 @@ public class CarritoController
         alert.setTitle(titulo);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    public void actualizarTablaDesdeCarrito()
+    {
+        Task<List<CarritoItem>> t = CarritoManager.obtenerCarritoTask();
+        t.setOnSucceeded(ev ->
+        {
+            List<CarritoItem> lista = t.getValue();
+            Platform.runLater(() ->
+            {
+                tablaCarrito.getItems().setAll(lista);
+            });
+        });
+        t.setOnFailed(ev -> t.getException().printStackTrace());
+        new Thread(t).start();
+    }
+
+    public void actualizarTotalConDescuentoAuto()
+    {
+        Task<Double> totalTask = CarritoManager.getTotalTask();
+
+        totalTask.setOnSucceeded(e ->
+        {
+            double total = totalTask.getValue();
+            int totalItems = CarritoManager.getTotalItems();
+
+            double rate = CarritoManager.calcularDescuentoRate(total, totalItems);
+            double discountPercent = rate * 100.0;
+
+            Task<Double> descuentoTask = CarritoManager.aplicarDescuentoTask(total, totalItems);
+
+            descuentoTask.setOnSucceeded(ev ->
+            {
+                double totalConDescuento = descuentoTask.getValue();
+                double descuentoImporte = total - totalConDescuento;
+
+                javafx.application.Platform.runLater(() ->
+                {
+                    if (rate > 0.0)
+                    {
+                        lblDescuento.setText(String.format("Descuento: %.0f%%   (-$%.2f)", discountPercent, descuentoImporte));
+                        lblDescuento.setStyle("-fx-font-size: 14px; -fx-text-fill: #27ae60; -fx-font-weight: bold;");
+                    } else
+                    {
+                        lblDescuento.setText(""); // nada
+                    }
+
+                    lblTotal.setText("$" + String.format("%.2f", totalConDescuento));
+                });
+
+                actualizarTablaDesdeCarrito();
+                System.out.println("[H4] total=" + total + " [H5] totalConDescuento=" + totalConDescuento + " items=" + totalItems);
+            });
+
+            descuentoTask.setOnFailed(ev ->
+            {
+                descuentoTask.getException().printStackTrace();
+            });
+
+            new Thread(descuentoTask).start();
+        });
+
+        totalTask.setOnFailed(e ->
+        {
+            totalTask.getException().printStackTrace();
+        });
+
+        new Thread(totalTask).start();
+    }
+
+    @FXML
+    private void handleVaciar()
+    {
+        Task<Void> t = CarritoManager.limpiarCarritoTask();
+        t.setOnSucceeded(e ->
+        {
+            actualizarTablaDesdeCarrito();
+            actualizarTotalConDescuentoAuto();
+        });
+        new Thread(t).start();
+    }
+
+    @FXML
+    private void handleFinalizar()
+    {
+        Task<Void> t = CarritoManager.limpiarCarritoTask();
+        t.setOnSucceeded(e ->
+        {
+            Platform.runLater(() ->
+            {
+                Alert a = new Alert(Alert.AlertType.INFORMATION, "Compra finalizada. Gracias.");
+                a.showAndWait();
+            });
+            actualizarTablaDesdeCarrito();
+            actualizarTotalConDescuentoAuto();
+        });
+        new Thread(t).start();
     }
 }
