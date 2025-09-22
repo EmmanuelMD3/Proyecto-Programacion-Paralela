@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import model.CarritoItem;
+import model.Usuarios;
 import util.CarritoManager;
 
 public class CarritoController
@@ -69,7 +70,7 @@ public class CarritoController
 
         tablaCarrito.setItems(carritoObservable);
 
-        actualizarTotal();
+        actualizarTotalConDescuentoAuto();
 
         btnVaciar.setOnAction(e ->
         {
@@ -78,13 +79,13 @@ public class CarritoController
             actualizarTotal();
         });
 
-        btnFinalizar.setOnAction(e ->
-        {
-            mostrarAlerta("Compra realizada", "¡Gracias por tu compra!");
-            CarritoManager.limpiarCarrito();
-            carritoObservable.clear();
-            actualizarTotal();
-        });
+//        btnFinalizar.setOnAction(e ->
+//        {
+//            mostrarAlerta("Compra realizada", "¡Gracias por tu compra!");
+//            CarritoManager.limpiarCarrito();
+//            carritoObservable.clear();
+//            actualizarTotal();
+//        });
     }
 
     private void actualizarTotal()
@@ -153,10 +154,11 @@ public class CarritoController
                     if (rate > 0.0)
                     {
                         lblDescuento.setText(String.format("Descuento: %.0f%%   (-$%.2f)", discountPercent, descuentoImporte));
-                        lblDescuento.setStyle("-fx-font-size: 14px; -fx-text-fill: #27ae60; -fx-font-weight: bold;");
+                        lblDescuento.setStyle("-fx-font-size: 14px; -fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+
                     } else
                     {
-                        lblDescuento.setText(""); // nada
+                        lblDescuento.setText("");
                     }
 
                     lblTotal.setText("$" + String.format("%.2f", totalConDescuento));
@@ -197,17 +199,37 @@ public class CarritoController
     @FXML
     private void handleFinalizar()
     {
-        Task<Void> t = CarritoManager.limpiarCarritoTask();
+        Usuarios usuario = util.SessionManager.getUsuarioActual();
+
+        if (usuario == null)
+        {
+            mostrarAlerta("Error", "No hay usuario en sesión.");
+            return;
+        }
+
+        Task<Boolean> t = CarritoManager.finalizarCompraTask(usuario.getIdUsuario());
+
         t.setOnSucceeded(e ->
         {
-            Platform.runLater(() ->
+            if (t.getValue())
             {
-                Alert a = new Alert(Alert.AlertType.INFORMATION, "Compra finalizada. Gracias.");
-                a.showAndWait();
-            });
-            actualizarTablaDesdeCarrito();
-            actualizarTotalConDescuentoAuto();
+                Platform.runLater(() ->
+                {
+                    Alert a = new Alert(Alert.AlertType.INFORMATION);
+                    a.setTitle("Compra finalizada");
+                    a.setHeaderText("Pago exitoso");
+                    a.setContentText("Tu compra se registró en el sistema.");
+                    a.showAndWait();
+                });
+                actualizarTablaDesdeCarrito();
+                actualizarTotalConDescuentoAuto();
+            } else
+            {
+                mostrarAlerta("Error", "No se pudo registrar la compra.");
+            }
         });
+
         new Thread(t).start();
     }
+
 }

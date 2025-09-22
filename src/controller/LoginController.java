@@ -105,6 +105,7 @@ public class LoginController
             Usuarios usuario = loginTask.getValue();
             if (usuario != null)
             {
+                util.SessionManager.setUsuarioActual(usuario);
                 abrirDashboard(usuario);
             } else
             {

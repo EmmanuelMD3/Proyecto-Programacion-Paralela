@@ -165,10 +165,10 @@ public class CarritoManager
 
     public static synchronized double calcularDescuentoRate(double total, int totalItems)
     {
-        double r1 = (total > 500) ? 0.30 : 0.0;    // 30% si total > 500
-        double r2 = (totalItems >= 3) ? 0.10 : 0.0; // 10% si >=3 items
-        double r3 = (total > 200) ? 0.20 : 0.0;    // 20% si total > 200
-        return Math.max(r1, Math.max(r2, r3));     // toma la mayor
+        double r1 = (total > 500) ? 0.30 : 0.0;
+        double r2 = (totalItems >= 3) ? 0.10 : 0.0;
+        double r3 = (total > 200) ? 0.20 : 0.0;
+        return Math.max(r1, Math.max(r2, r3));
     }
 
     public static synchronized double aplicarDescuento(double total, int totalItems)
@@ -195,4 +195,34 @@ public class CarritoManager
     {
         return carrito.stream().mapToInt(CarritoItem::getCantidad).sum();
     }
+
+    public static Task<Boolean> finalizarCompraTask(int idUsuario)
+    {
+        return new Task<>()
+        {
+            @Override
+            protected Boolean call() throws Exception
+            {
+                Thread.sleep(2000);
+
+                List<CarritoItem> items = new ArrayList<>(carrito);
+
+                double subtotal = getTotal();
+                int totalItems = getTotalItems();
+                double rate = calcularDescuentoRate(subtotal, totalItems);
+                double total = subtotal * (1 - rate);
+                double descuento = subtotal - total;
+
+                int idVenta = dao.VentasDAO.registrarVenta(idUsuario, subtotal, descuento, total, items);
+
+                if (idVenta > 0)
+                {
+                    limpiarCarrito(); 
+                    return true;
+                }
+                return false;
+            }
+        };
+    }
+
 }
