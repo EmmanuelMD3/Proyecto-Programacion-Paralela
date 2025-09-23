@@ -3,21 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/controller/LoginController.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/controller/CarritoController.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/controller/DashboardController.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/util/CarritoManager.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/mainApp/MainApp.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/view/dashboard.fxml</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/dao/Detalle_VentasDAO.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/dao/ProductoDAO.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/model/Ventas.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/dao/VentasDAO.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/model/Producto.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/view/compras.fxml</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/controller/MisComprasController.java</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/style/miscompras.css</file>
-            <file>file:/C:/Users/chemo/Documents/NetBeansProjects/Proyecto-Programacion-Paralela/src/view/login.fxml</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/model/CarritoItem.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/util/CarritoManager.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/controller/CarritoController.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/style/dashboard.css</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/dao/VentasDAO.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/util/SessionManager.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/model/Usuarios.java</file>
+            <file>file:/C:/Users/chemo/OneDrive/Documentos/NetBeansProjects/ProyectoParalela/src/dao/UsuariosDAO.java</file>
         </group>
     </open-files>
 </project-private>

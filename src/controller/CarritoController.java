@@ -1,5 +1,8 @@
 package controller;
 
+import dao.VentasDAO;
+import java.awt.Desktop;
+import java.io.File;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -7,6 +10,10 @@ import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import model.CarritoItem;
 import model.Usuarios;
 import util.CarritoManager;
@@ -107,13 +114,6 @@ public class CarritoController
         new Thread(task).start();
     }
 
-    private void mostrarAlerta(String titulo, String mensaje)
-    {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
 
     public void actualizarTablaDesdeCarrito()
     {
@@ -197,7 +197,21 @@ public class CarritoController
     }
 
     @FXML
-    private void handleFinalizar()
+    private void mostrarAlerta(String titulo, String mensaje)
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(titulo);
+        alert.setContentText(mensaje);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/style/alert.css").toExternalForm());
+
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleFinalizar(ActionEvent event)
     {
         Usuarios usuario = util.SessionManager.getUsuarioActual();
 
@@ -207,29 +221,104 @@ public class CarritoController
             return;
         }
 
-        Task<Boolean> t = CarritoManager.finalizarCompraTask(usuario.getIdUsuario());
+        Task<Integer> finalizarCompraTask = CarritoManager.finalizarCompraTask(usuario.getIdUsuario());
 
-        t.setOnSucceeded(e ->
+        finalizarCompraTask.setOnSucceeded(e ->
         {
-            if (t.getValue())
+            int idVentaGenerada = finalizarCompraTask.getValue();
+
+            if (idVentaGenerada > 0)
             {
                 Platform.runLater(() ->
                 {
-                    Alert a = new Alert(Alert.AlertType.INFORMATION);
-                    a.setTitle("Compra finalizada");
-                    a.setHeaderText("Pago exitoso");
-                    a.setContentText("Tu compra se registró en el sistema.");
-                    a.showAndWait();
+//                    Alert a = new Alert(Alert.AlertType.INFORMATION);
+//                    a.setTitle("Compra finalizada");
+//                    a.setHeaderText("Pago exitoso");
+//                    a.setContentText("Tu compra se registró en el sistema.");
+//                    a.showAndWait();
+                    mostrarAlerta("Compra finalizada", "Pago exitoso\nTu compra se registró en el sistema.");
                 });
-                actualizarTablaDesdeCarrito();
-                actualizarTotalConDescuentoAuto();
+
+                List<CarritoItem> itemsVenta = dao.VentasDAO.obtenerDetallesPorVenta(idVentaGenerada);
+                double subtotal = itemsVenta.stream().mapToDouble(CarritoItem::getSubtotal).sum();
+                int totalItems = itemsVenta.stream().mapToInt(CarritoItem::getCantidad).sum();
+                double totalConDesc = CarritoManager.aplicarDescuento(subtotal, totalItems);
+                double descuento = subtotal - totalConDesc;
+                String nombre = dao.UsuariosDAO.obtenerNombreUsuarioPorId(usuario.getIdUsuario());
+
+                String userHome = System.getProperty("user.home");
+                File downloadsDir = new File(userHome, "Downloads");
+                if (!downloadsDir.exists())
+                {
+                    downloadsDir.mkdirs();
+                }
+                File ticketFile = new File(downloadsDir, "Ticket_Venta_" + idVentaGenerada + ".pdf");
+
+                Task<File> generarTicketTask = CarritoManager.generarTicketTask(
+                        ticketFile,
+                        nombre,
+                        idVentaGenerada,
+                        subtotal,
+                        descuento,
+                        totalConDesc,
+                        itemsVenta
+                );
+
+                generarTicketTask.setOnSucceeded(ev ->
+                {
+                    File ticket = generarTicketTask.getValue();
+                    if (ticket != null && ticket.exists())
+                    {
+                        Platform.runLater(() ->
+                        {
+                            try
+                            {
+                                if (Desktop.isDesktopSupported())
+                                {
+                                    Desktop.getDesktop().open(ticket);
+                                }
+                            } catch (Exception ex)
+                            {
+                                ex.printStackTrace();
+                            }
+                        });
+                    }
+                });
+
+                generarTicketTask.setOnFailed(ev ->
+                {
+                    generarTicketTask.getException().printStackTrace();
+                    Platform.runLater(() ->
+                    {
+                        mostrarAlerta("Error al generar PDF", "No se pudo crear el archivo del ticket.");
+                    });
+                });
+
+                new Thread(generarTicketTask).start();
+
+                Platform.runLater(() ->
+                {
+                    actualizarTablaDesdeCarrito();
+                    actualizarTotalConDescuentoAuto();
+                });
             } else
             {
-                mostrarAlerta("Error", "No se pudo registrar la compra.");
+                Platform.runLater(() ->
+                {
+                    mostrarAlerta("Error", "No se pudo registrar la compra.");
+                });
             }
         });
 
-        new Thread(t).start();
-    }
+        finalizarCompraTask.setOnFailed(e ->
+        {
+            finalizarCompraTask.getException().printStackTrace();
+            Platform.runLater(() ->
+            {
+                mostrarAlerta("Error de conexión", "No se pudo completar la compra. Revisa tu conexión.");
+            });
+        });
 
+        new Thread(finalizarCompraTask).start();
+    }
 }

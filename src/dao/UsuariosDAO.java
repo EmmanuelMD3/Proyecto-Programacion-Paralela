@@ -44,10 +44,10 @@ public class UsuariosDAO
         {
 
             ps.setString(1, correo);
-            ps.setString(2, contrasenia); // ⚠️ aquí deberías usar hash, no texto plano
+            ps.setString(2, contrasenia);
 
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // true si existe usuario
+            return rs.next();
 
         } catch (Exception e)
         {
@@ -83,7 +83,29 @@ public class UsuariosDAO
             e.printStackTrace();
         }
 
-        return null; 
+        return null;
     }
 
+    public static String obtenerNombreUsuarioPorId(int idUsuario)
+    {
+        String sql = "SELECT nombre FROM Usuarios WHERE idUsuario = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql))
+        {
+
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
+                    return rs.getString("nombre");
+                }
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return "Usuario Desconocido";
+    }
 }
