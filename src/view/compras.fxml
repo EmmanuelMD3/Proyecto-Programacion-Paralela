@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.MisComprasController"
+            prefWidth="900" prefHeight="650"
+            style="-fx-background-color: #f4f6f9;"
+            stylesheets="@../style/miscompras.css">
+    
+
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <Label text="Mis Compras"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"
+               maxWidth="Infinity" alignment="CENTER"/>
+
+        <VBox spacing="10">
+            <Label text="Historial de Compras"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+            <TableView fx:id="tablaCompras" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="colIdVenta" text="ID Venta" prefWidth="100"/>
+                    <TableColumn fx:id="colFecha" text="Fecha" prefWidth="200"/>
+                    <TableColumn fx:id="colVentaSubtotal" text="Subtotal" prefWidth="120"/>
+                    <TableColumn fx:id="colVentaDescuento" text="Descuento" prefWidth="120"/>
+                    <TableColumn fx:id="colVentaTotal" text="Total" prefWidth="120"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Productos de la compra seleccionada"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+            <TableView fx:id="tablaDetalles" prefHeight="300">
+                <columns>
+                    <TableColumn fx:id="colDetalleProducto" text="Producto" prefWidth="250"/>
+                    <TableColumn fx:id="colDetalleCantidad" text="Cantidad" prefWidth="120"/>
+                    <TableColumn fx:id="colDetallePrecio" text="Precio Unitario" prefWidth="150"/>
+                    <TableColumn fx:id="colDetalleSubtotal" text="Subtotal" prefWidth="150"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </VBox>
+</AnchorPane>
+

@@ -2,6 +2,7 @@ package controller;
 
 import dao.ProductoDAO;
 import java.awt.Insets;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
@@ -203,7 +204,19 @@ public class DashboardController
     @FXML
     private void handleCompras()
     {
-        mostrarMensaje("Sección de mis compras");
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/compras.fxml"));
+            Parent root = loader.load();
+
+            MisComprasController controller = loader.getController();
+
+            contentArea.getChildren().setAll(root); 
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            mostrarMensaje("Error al cargar la sección de compras.");
+        }
     }
 
     @FXML

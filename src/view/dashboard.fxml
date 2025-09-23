@@ -19,7 +19,7 @@
             </VBox>
 
             <Button onAction="#handleProductos" styleClass="sidebar-btn" text="🛒 Productos" />
-            <Button onAction="#handleCarrito" styleClass="sidebar-btn" text="🛍️ Carrito" />
+            <Button onAction="#handleCarrito" styleClass="sidebar-btn" text="🛍 Carrito" />
             <Button onAction="#handleCompras" styleClass="sidebar-btn" text="📜 Mis compras" />
             <Button onAction="#handleCerrarSesion" styleClass="sidebar-btn" text="🚪 Cerrar sesión" />
         </VBox>

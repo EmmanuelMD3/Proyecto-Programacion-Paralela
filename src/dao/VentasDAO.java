@@ -10,8 +10,10 @@ import model.Ventas;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import model.CarritoItem;
+import model.Producto;
 
 /**
  *
@@ -29,7 +31,7 @@ public class VentasDAO
 
         try (Connection conn = Conexion.conectar(); PreparedStatement psVenta = conn.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS); PreparedStatement psDetalle = conn.prepareStatement(sqlDetalle))
         {
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
 
             psVenta.setInt(1, idUsuario);
             psVenta.setDouble(2, subtotal);
@@ -62,4 +64,66 @@ public class VentasDAO
 
         return idVenta;
     }
+
+    public static List<Ventas> obtenerComprasPorUsuario(int idUsuario)
+    {
+        List<Ventas> lista = new ArrayList<>();
+        String sql = "SELECT idVenta, fecha, subtotal, descuento, total FROM Ventas WHERE idUsuario = ? ORDER BY fecha DESC";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql))
+        {
+
+            ps.setInt(1, idUsuario);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                Ventas v = new Ventas(
+                        rs.getInt("idVenta"),
+                        idUsuario,
+                        rs.getTimestamp("fecha"),
+                        rs.getDouble("subtotal"),
+                        rs.getDouble("descuento"),
+                        rs.getDouble("total")
+                );
+                lista.add(v);
+            }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public static List<CarritoItem> obtenerDetallesPorVenta(int idVenta)
+    {
+        List<CarritoItem> lista = new ArrayList<>();
+        String sql = "SELECT p.idProducto, p.nombre, dv.cantidad, dv.precio_unitario "
+                + "FROM Detalle_Ventas dv "
+                + "INNER JOIN Productos p ON dv.idProducto = p.idProducto "
+                + "WHERE dv.idVenta = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql))
+        {
+
+            ps.setInt(1, idVenta);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                Producto p = new Producto(
+                        rs.getInt("idProducto"),
+                        rs.getString("nombre"),
+                        rs.getDouble("precio_unitario")
+                );
+                CarritoItem item = new CarritoItem(p, rs.getInt("cantidad"));
+                lista.add(item);
+            }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
 }
