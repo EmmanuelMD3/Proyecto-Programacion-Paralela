@@ -6,24 +6,42 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="600" prefWidth="450" styleClass="root-container" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RegistroController">
+<AnchorPane prefHeight="600" prefWidth="450" styleClass="root-container"
+            xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RegistroController">
 
-    <VBox alignment="CENTER" spacing="12" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.topAnchor="30">
+    <VBox alignment="CENTER" spacing="12"
+          AnchorPane.bottomAnchor="30"
+          AnchorPane.leftAnchor="30"
+          AnchorPane.rightAnchor="30"
+          AnchorPane.topAnchor="30">
 
         <Label styleClass="title-label" text="Crear Cuenta" />
+
+        <VBox alignment="CENTER" spacing="8">
+            <ImageView fx:id="imgPerfil"
+                       fitHeight="100.0" fitWidth="100.0"
+                       pickOnBounds="true" preserveRatio="true">
+                <clip>
+                    <Circle radius="50" centerX="50" centerY="50"/>
+                </clip>
+            </ImageView>
+            <Button fx:id="btnSeleccionarFoto" onAction="#handleSeleccionarFoto" text="Seleccionar Foto" />
+        </VBox>
 
         <TextField fx:id="txtNombre" promptText="Nombre completo" styleClass="input-field" />
         <TextField fx:id="txtCorreo" promptText="Correo electrónico" styleClass="input-field" />
 
-        <!-- Campo contraseña -->
         <PasswordField fx:id="txtContrasenia" promptText="Contraseña" styleClass="input-field" />
         <TextField fx:id="txtContraseniaVisible" managed="false" promptText="Contraseña" styleClass="input-field" visible="false" />
         <CheckBox fx:id="chkMostrarContrasenia" prefHeight="17.0" prefWidth="130.0" styleClass="checkbox-label" text="Mostrar contraseña" />
 
-        <!-- Campo confirmar contraseña -->
         <PasswordField fx:id="txtConfirmar" promptText="Confirmar contraseña" styleClass="input-field" />
         <TextField fx:id="txtConfirmarVisible" managed="false" promptText="Confirmar contraseña" styleClass="input-field" visible="false" />
         <CheckBox fx:id="chkMostrarConfirmar" prefHeight="17.0" prefWidth="130.0" styleClass="checkbox-label" text="Mostrar contraseña" />

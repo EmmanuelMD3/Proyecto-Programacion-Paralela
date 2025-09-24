@@ -2,6 +2,8 @@ CREATE DATABASE IF NOT EXISTS TiendaOnline;
 USE TiendaOnline;
 
 SELECT * FROM Usuarios;
+ALTER TABLE Usuarios ADD COLUMN foto_perfil VARCHAR(255) DEFAULT 'default_profile.png';
+DESC USUARIOS;
 -- ========================
 -- TABLA USUARIOS
 -- ========================
@@ -9,8 +11,9 @@ CREATE TABLE Usuarios (
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) UNIQUE NOT NULL,
-    contrasenia VARCHAR(255) NOT NULL, -- Guardar hash, no texto plano
-    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    contrasenia VARCHAR(255) NOT NULL, 
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    foto_perfil VARCHAR(255) DEFAULT 'default_profile.png'
 );
 
 -- ========================

@@ -12,11 +12,40 @@ import java.util.Date;
  */
 public class Usuarios
 {
+
     private int idUsuario;
     private String nombre;
     private String corre;
     private String contrasenia;
     private Date creado_en;
+    private String fotoPerfil;
+
+    public Usuarios(int idUsuario, String nombre, String corre, String contrasenia, String fotoPerfil)
+    {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.corre = corre;
+        this.contrasenia = contrasenia;
+        this.fotoPerfil = fotoPerfil;
+    }
+
+    public Usuarios(int idUsuario, String nombre, String corre, String contrasenia, Date creado_en, String fotoPerfil)
+    {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.corre = corre;
+        this.contrasenia = contrasenia;
+        this.creado_en = creado_en;
+        this.fotoPerfil = fotoPerfil;
+    }
+
+    public Usuarios(String nombre, String corre, String contrasenia, String fotoPerfil)
+    {
+        this.nombre = nombre;
+        this.corre = corre;
+        this.contrasenia = contrasenia;
+        this.fotoPerfil = fotoPerfil;
+    }
 
     public Usuarios(int idUsuario, String nombre, String corre, String contrasenia)
     {
@@ -26,24 +55,22 @@ public class Usuarios
         this.contrasenia = contrasenia;
     }
 
-    public Usuarios(int idUsuario, String nombre, String corre, String contrasenia, Date creado_en)
-    {
-        this.idUsuario = idUsuario;
-        this.nombre = nombre;
-        this.corre = corre;
-        this.contrasenia = contrasenia;
-        this.creado_en = creado_en;
-    }
-
     public Usuarios(String nombre, String corre, String contrasenia)
     {
         this.nombre = nombre;
         this.corre = corre;
         this.contrasenia = contrasenia;
     }
-    
-    
 
+    public String getFotoPerfil()
+    {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil)
+    {
+        this.fotoPerfil = fotoPerfil;
+    }
 
     /**
      * @return the idUsuario
@@ -124,5 +151,5 @@ public class Usuarios
     {
         this.creado_en = creado_en;
     }
-    
+
 }

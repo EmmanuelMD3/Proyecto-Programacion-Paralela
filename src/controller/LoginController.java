@@ -9,10 +9,12 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Usuarios;
+import util.SessionManager;
 
 public class LoginController
 {
@@ -105,13 +107,18 @@ public class LoginController
             Usuarios usuario = loginTask.getValue();
             if (usuario != null)
             {
-                util.SessionManager.setUsuarioActual(usuario);
+                SessionManager.setUsuarioActual(usuario);
                 abrirDashboard(usuario);
             } else
             {
                 mostrarAlerta("Error", "Credenciales inválidas.");
-
             }
+        });
+
+        loginTask.setOnFailed(e ->
+        {
+            loginTask.getException().printStackTrace();
+            mostrarAlerta("Error", "Error de conexión.");
         });
 
         new Thread(loginTask).start();
@@ -122,11 +129,13 @@ public class LoginController
         try
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dashboard.fxml"));
-            Scene scene = new Scene(loader.load());
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/style/dashboard.css").toExternalForm());
 
             DashboardController controller = loader.getController();
-            controller.setUserData(usuario.getNombre(), usuario.getCorre());
+
+            controller.setUserData(usuario);
 
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.setScene(scene);

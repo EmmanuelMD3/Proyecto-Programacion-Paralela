@@ -8,6 +8,15 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import model.Usuarios;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class RegistroController
 {
@@ -25,10 +34,20 @@ public class RegistroController
     private CheckBox chkMostrarContrasenia, chkMostrarConfirmar;
 
     @FXML
+    private ImageView imgPerfil;
+
+    private File selectedFile;
+
+    @FXML
     public void initialize()
     {
-        txtContraseniaVisible.textProperty().bindBidirectional(txtContrasenia.textProperty());
+        File defaultFile = new File("imagenes/default_profile.png");
+        if (defaultFile.exists())
+        {
+            imgPerfil.setImage(new Image(defaultFile.toURI().toString()));
+        }
 
+        txtContraseniaVisible.textProperty().bindBidirectional(txtContrasenia.textProperty());
         chkMostrarContrasenia.selectedProperty().addListener((obs, oldVal, newVal) ->
         {
             if (newVal)
@@ -47,7 +66,6 @@ public class RegistroController
         });
 
         txtConfirmarVisible.textProperty().bindBidirectional(txtConfirmar.textProperty());
-
         chkMostrarConfirmar.selectedProperty().addListener((obs, oldVal, newVal) ->
         {
             if (newVal)
@@ -67,6 +85,32 @@ public class RegistroController
     }
 
     @FXML
+    private void handleSeleccionarFoto(ActionEvent event)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar Foto de Perfil");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Archivos de Imagen", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null)
+        {
+            try
+            {
+                Image image = new Image(selectedFile.toURI().toString(), 100, 100, true, true);
+                imgPerfil.setImage(image);
+            } catch (Exception e)
+            {
+                mostrarAlerta("Error", "No se pudo cargar la imagen.");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
     private void handleRegistro(ActionEvent event)
     {
         String nombre = txtNombre.getText();
@@ -80,7 +124,34 @@ public class RegistroController
             return;
         }
 
-        Usuarios usuario = new Usuarios(nombre, correo, contrasenia);
+        String fotoPerfilPath = "imagenes/default_profile.png";
+
+        if (selectedFile != null)
+        {
+            try
+            {
+                Path projectRoot = Paths.get("").toAbsolutePath();
+                Path destDir = projectRoot.resolve("src/imagenes/");
+
+                if (!Files.exists(destDir))
+                {
+                    Files.createDirectories(destDir);
+                }
+
+                String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destFile = destDir.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destFile, StandardCopyOption.REPLACE_EXISTING);
+
+                fotoPerfilPath = "imagenes/" + fileName;
+            } catch (Exception e)
+            {
+                mostrarAlerta("Error", "No se pudo guardar la imagen de perfil.");
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        Usuarios usuario = new Usuarios(nombre, correo, contrasenia, fotoPerfilPath);
         UsuariosDAO.agregarUsuarios(usuario);
 
         mostrarAlerta("Usuario Registrado", "Usuario registrado exitosamente");
@@ -93,7 +164,6 @@ public class RegistroController
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
             Scene scene = new Scene(loader.load());
-
             scene.getStylesheets().add(getClass().getResource("/style/login.css").toExternalForm());
 
             Stage stage = (Stage) txtNombre.getScene().getWindow();
@@ -111,11 +181,6 @@ public class RegistroController
         alert.setTitle(titulo);
         alert.setHeaderText(titulo);
         alert.setContentText(mensaje);
-
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/style/alert.css").toExternalForm());
-
         alert.showAndWait();
     }
-
 }

@@ -20,15 +20,17 @@ public class UsuariosDAO
 
     public static boolean agregarUsuarios(Usuarios usuarios)
     {
-        String sql = "INSERT INTO Usuarios (nombre, correo, contrasenia) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Usuarios (nombre, correo, contrasenia, foto_perfil) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = Conexion.conectar(); PreparedStatement pstmt = conn.prepareStatement(sql))
         {
             pstmt.setString(1, usuarios.getNombre());
             pstmt.setString(2, usuarios.getCorre());
             pstmt.setString(3, usuarios.getContrasenia());
+            pstmt.setString(4, usuarios.getFotoPerfil());
 
             return pstmt.executeUpdate() > 0;
+
         } catch (SQLException e)
         {
             System.err.println("Error al registrar cliente: " + e.getMessage());
@@ -66,23 +68,23 @@ public class UsuariosDAO
             ps.setString(1, correo);
             ps.setString(2, contrasenia);
 
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next())
+            try (ResultSet rs = ps.executeQuery())
             {
-                int id = rs.getInt("idUsuario");
-                String nombre = rs.getString("nombre");
-                String email = rs.getString("correo");
-                String pass = rs.getString("contrasenia");
+                if (rs.next())
+                {
+                    int id = rs.getInt("idUsuario");
+                    String nombre = rs.getString("nombre");
+                    String email = rs.getString("correo");
+                    String pass = rs.getString("contrasenia");
+                    String fotoPerfil = rs.getString("foto_perfil"); 
 
-                return new Usuarios(id, nombre, email, pass);
+                    return new Usuarios(id, nombre, email, pass, fotoPerfil);
+                }
             }
-
-        } catch (Exception e)
+        } catch (SQLException e)
         {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -107,5 +109,30 @@ public class UsuariosDAO
             e.printStackTrace();
         }
         return "Usuario Desconocido";
+    }
+
+    public static String obtenerFotoPerfil(int idUsuario)
+    {
+        String foto = null;
+        try
+        {
+            Connection conn = Conexion.conectar();
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT foto_perfil FROM Usuarios WHERE idUsuario = ?"
+            );
+            ps.setInt(1, idUsuario);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+            {
+                foto = rs.getString("foto_perfil");
+            }
+            rs.close();
+            ps.close();
+            conn.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return foto;
     }
 }

@@ -1,13 +1,14 @@
 package controller;
 
 import dao.ProductoDAO;
-import java.awt.Insets;
+import dao.UsuariosDAO;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -19,28 +20,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import model.CarritoItem;
 import model.Producto;
 import util.CarritoManager;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.converter.IntegerStringConverter;
-import model.CarritoItem;
-import model.Producto;
-import util.CarritoManager;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
+import model.Usuarios;
+import util.SessionManager;
 
 public class DashboardController
 {
@@ -54,12 +44,18 @@ public class DashboardController
     @FXML
     private StackPane contentArea;
 
-    private Label lblTotalLocal;
+    @FXML
+    private ImageView imgPerfil;
 
-    public void setUserData(String nombre, String correo)
+    public void setUserData(Usuarios usuario)
     {
-        lblNombre.setText(nombre);
-        lblCorreo.setText(correo);
+        if (usuario != null)
+        {
+            lblNombre.setText(usuario.getNombre());
+            lblCorreo.setText(usuario.getCorre());
+
+            cargarFotoPerfil(usuario.getFotoPerfil());
+        }
     }
 
     private void cargarProductos()
@@ -211,7 +207,7 @@ public class DashboardController
 
             MisComprasController controller = loader.getController();
 
-            contentArea.getChildren().setAll(root); 
+            contentArea.getChildren().setAll(root);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -272,6 +268,51 @@ public class DashboardController
         root.getChildren().add(total);
 
         contentArea.getChildren().setAll(root);
+    }
+
+//    public void setUserData()
+//    {
+//        Usuarios usuario = SessionManager.getUsuarioActual();
+//        if (usuario != null)
+//        {
+//            lblNombre.setText(usuario.getNombre());
+//            lblCorreo.setText(usuario.getCorre());
+//
+//            cargarFotoPerfil(usuario.getFotoPerfil());
+//        }
+//    }
+
+    private void cargarFotoPerfil(String fotoPath)
+    {
+        try
+        {
+            InputStream stream = null;
+
+            if (fotoPath != null && !fotoPath.isEmpty())
+            {
+                stream = getClass().getResourceAsStream("/" + fotoPath);
+            }
+
+            if (stream == null)
+            {
+                System.err.println("No se encontró la imagen: " + fotoPath + ". Cargando por defecto.");
+                stream = getClass().getResourceAsStream("/imagenes/default_profile.png");
+            }
+
+            if (stream != null)
+            {
+                Image image = new Image(stream, 80, 80, true, true);
+                imgPerfil.setImage(image);
+                Circle clip = new Circle(40, 40, 40); // centro x=40, y=40
+                imgPerfil.setClip(clip);
+            } else
+            {
+                System.err.println("No se encontró la imagen por defecto.");
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }
